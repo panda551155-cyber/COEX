@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iROO × COEX — 塑膠射出專案時程表</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Barlow+Condensed:wght@700;800&family=Syne:wght@400;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --surface: #ffffff;
+    --surface2: #f0f2f5;
+    --border: #e0e3ea;
+    --border-strong: #c8ccd6;
+    --accent: #29ABE2;
+    --accent-dim: rgba(41,171,226,0.10);
+    --text: #1a1d23;
+    --text-muted: #6b7080;
+    --text-dim: #9ca3af;
+    --row-alt: rgba(0,0,0,0.018);
+    --weekend-bg: rgba(0,0,0,0.025);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    min-height: 100vh;
+  }
+  .page-wrapper {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 40px 32px 60px;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    padding-bottom: 28px;
+    border-bottom: 2px solid var(--border);
+    animation: fadeDown 0.5s ease both;
+  }
+  .logo-area { display: flex; align-items: center; gap: 20px; }
+  .divider-line { width: 1px; height: 40px; background: var(--border-strong); }
+  .client-tag { display: flex; flex-direction: column; gap: 2px; }
+  .client-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--text-dim);
+    letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .client-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: 0.04em;
+  }
+  .header-right { text-align: right; }
+  .project-title {
+    font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+    color: var(--accent); letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 6px;
+  }
+  .project-dates {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--text-muted); letter-spacing: 0.04em;
+  }
+
+  /* STATS */
+  .stats-bar { display: flex; gap: 12px; margin-bottom: 32px; animation: fadeUp 0.5s 0.1s ease both; }
+  .stat-card {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px 20px; position: relative; overflow: hidden;
+    transition: box-shadow 0.25s, border-color 0.25s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .stat-card:hover { border-color: var(--accent); box-shadow: 0 4px 16px rgba(41,171,226,0.12); }
+  .stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent); transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s; border-radius: 8px 8px 0 0;
+  }
+  .stat-card:hover::before { transform: scaleX(1); }
+  .stat-num {
+    font-family: 'Barlow Condensed', sans-serif; font-size: 30px;
+    font-weight: 800; color: var(--text); line-height: 1; margin-bottom: 4px;
+  }
+  .stat-num span { font-size: 14px; color: var(--accent); margin-left: 1px; font-weight: 700; }
+  .stat-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase;
+  }
+
+  /* GANTT WRAPPER */
+  .gantt-wrapper {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    animation: fadeUp 0.5s 0.2s ease both;
+  }
+  .gantt-scroll { overflow-x: auto; overflow-y: visible; }
+  .gantt-scroll::-webkit-scrollbar { height: 6px; }
+  .gantt-scroll::-webkit-scrollbar-track { background: var(--surface2); }
+  .gantt-scroll::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+  table { border-collapse: collapse; width: 100%; min-width: 900px; }
+
+  /* Month header */
+  .month-header-row th {
+    background: #1a1d23; font-family: 'DM Mono', monospace;
+    font-size: 10px; font-weight: 500; color: var(--accent);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 9px 0; border-right: 1px solid #2a2d35; white-space: nowrap;
+  }
+  .month-header-row th.info-col { text-align: left; padding-left: 16px; color: #3a3f50; font-size: 9px; }
+
+  /* Day header */
+  .day-header-row th {
+    background: #22252d; font-family: 'DM Mono', monospace; font-size: 9px; color: #4a5060;
+    text-align: center; padding: 6px 2px; border-bottom: 3px solid var(--accent);
+    white-space: nowrap; min-width: 28px; border-right: 1px solid #2a2d35;
+  }
+  .day-header-row th.weekend-col { color: #333640; background: #1e2126; }
+  .day-header-row th.info-th {
+    text-align: left; padding-left: 16px; font-size: 10px; color: #6b7080;
+    border-right: 1px solid #2a2d35;
+  }
+
+  /* Data rows */
+  .task-row { transition: background 0.15s; }
+  .task-row:nth-child(even) { background: var(--row-alt); }
+  .task-row:hover { background: rgba(41,171,226,0.05) !important; }
+  .task-row td { border-bottom: 1px solid var(--border); vertical-align: middle; }
+
+  .col-task { padding: 0 12px 0 16px; white-space: nowrap; border-right: 1px solid var(--border); min-width: 150px; }
+  .col-desc { padding: 0 16px; min-width: 260px; max-width: 280px; border-right: 1px solid var(--border); }
+  .col-days { text-align: center; padding: 0 12px; white-space: nowrap; border-right: 1px solid var(--border); min-width: 60px; }
+  .col-date { text-align: center; padding: 0 12px; white-space: nowrap; border-right: 1px solid var(--border); min-width: 90px; }
+  .col-date-end { border-right: 2px solid var(--border-strong) !important; }
+
+  .task-name {
+    font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700;
+    color: var(--text); padding: 14px 0; display: block;
+  }
+  .task-name-inner { display: flex; align-items: center; }
+
+  /* Row index — Barlow Condensed bold for strong, clean numerals */
+  .row-index {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px; border-radius: 6px;
+    background: var(--accent-dim); border: 1.5px solid rgba(41,171,226,0.35);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; font-weight: 800; color: var(--accent);
+    margin-right: 10px; flex-shrink: 0; letter-spacing: 0; line-height: 1;
+  }
+
+  .task-desc {
+    font-size: 11px; color: var(--text-muted); line-height: 1.5; padding: 8px 0; display: block;
+  }
+  .days-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500;
+    color: var(--accent); background: var(--accent-dim);
+    border: 1px solid rgba(41,171,226,0.25); border-radius: 4px; padding: 3px 8px; white-space: nowrap;
+  }
+  .date-text { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); }
+
+  /* Gantt cells */
+  .gantt-cell { padding: 6px 1px; border-right: 1px solid rgba(0,0,0,0.04); min-width: 28px; }
+  .gantt-cell.weekend { background: var(--weekend-bg); }
+  .bar-fill { height: 18px; border-radius: 2px; width: 100%; position: relative; overflow: hidden; }
+  .bar-fill.active { box-shadow: 0 1px 5px rgba(0,0,0,0.15); }
+  .bar-fill.active.bar-start { border-radius: 6px 2px 2px 6px; }
+  .bar-fill.active.bar-end   { border-radius: 2px 6px 6px 2px; }
+  .bar-fill.active.bar-start.bar-end { border-radius: 6px; }
+  .bar-fill.active::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 40%;
+    background: rgba(255,255,255,0.2); border-radius: inherit;
+  }
+
+  /* Footer */
+  .footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--border);
+    animation: fadeUp 0.5s 0.4s ease both;
+  }
+  .legend { display: flex; align-items: center; gap: 20px; }
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--text-muted); letter-spacing: 0.04em;
+  }
+  .legend-dot { width: 20px; height: 10px; border-radius: 3px; }
+  .footer-brand { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 0.1em; }
+  .footer-brand strong { color: var(--accent); }
+
+  @keyframes fadeDown { from { opacity:0; transform:translateY(-14px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeUp   { from { opacity:0; transform:translateY(14px);  } to { opacity:1; transform:translateY(0); } }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <header class="header">
+    <div class="logo-area">
+      <div class="client-tag">
+        <span class="client-label">客戶專案</span>
+        <span class="client-name">iROO</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="project-title">塑膠射出專案時程表</div>
+      <div class="project-dates">2025 / 03 / 17 &nbsp;→&nbsp; 2025 / 09 / 26 &nbsp;｜&nbsp; 140 工作天</div>
+    </div>
+  </header>
+
+  <div class="stats-bar">
+    <div class="stat-card"><div class="stat-num">9<span>項</span></div><div class="stat-label">工作階段</div></div>
+    <div class="stat-card"><div class="stat-num">140<span>天</span></div><div class="stat-label">總工作天數</div></div>
+    <div class="stat-card"><div class="stat-num">6<span>月</span></div><div class="stat-label">專案總工期</div></div>
+    <div class="stat-card"><div class="stat-num">03/17</div><div class="stat-label">專案起始</div></div>
+    <div class="stat-card"><div class="stat-num">09/26</div><div class="stat-label">預計完工</div></div>
+  </div>
+
+  <div class="gantt-wrapper">
+    <div id="gantt-container"></div>
+  </div>
+
+  <footer class="footer">
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#29ABE2;"></div>工作日</div>
+      <div class="legend-item"><div class="legend-dot" style="background:rgba(41,171,226,0.28);border:1px solid rgba(41,171,226,0.35);"></div>週末（含於工期）</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f0f2f5;border:1px solid #e0e3ea;"></div>非工作日</div>
+    </div>
+    <div class="footer-brand">Prepared by <strong>COEX Design</strong> &nbsp;｜&nbsp; 2025</div>
+  </footer>
+
+</div>
+<script>
+const tasks = [
+  { name:"機構設計",      desc:"設計圖面轉量產圖面繪製，繪製拔模角度與卡扣手感",        days:10, color:"#29ABE2" },
+  { name:"模型製作",      desc:"將量產圖面透過模型的方式驗證外觀與手感",                days:15, color:"#4DBDE8" },
+  { name:"量產報價",      desc:"外觀與機構設計定案後，進行塑膠模具與成品報價",          days:5,  color:"#F5A623" },
+  { name:"行政流程",      desc:"簽約支付模具頭款，確認交貨地點與方式",                  days:5,  color:"#F0BF45" },
+  { name:"模具製作前檢討", desc:"DFM 檢討，與設計師與客戶端，檢討成品射出品質規範",      days:5,  color:"#E07B39" },
+  { name:"模具製作",      desc:"收到模具訂金後，啟動模具製作",                          days:40, color:"#E85454" },
+  { name:"試模",          desc:"T0 至 T-Final",                                        days:20, color:"#B06CE8" },
+  { name:"下單製作",      desc:"結清模具尾款，並支付下單數量開始製作成品",              days:30, color:"#52D98C" },
+  { name:"組裝交貨",      desc:"將零件進行組裝",                                        days:10, color:"#29ABE2" },
+];
+
+function addWorkingDays(date, n) {
+  let d = new Date(date), added = 0;
+  while (added < n - 1) { d.setDate(d.getDate()+1); if(d.getDay()!==0&&d.getDay()!==6) added++; }
+  return d;
+}
+function nextWorkingDay(date) {
+  let d = new Date(date); d.setDate(d.getDate()+1);
+  while(d.getDay()===0||d.getDay()===6) d.setDate(d.getDate()+1); return d;
+}
+function fmtShort(d){ return `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`; }
+
+let start0 = new Date(2025,2,17), taskData=[], cur=new Date(start0);
+for(let t of tasks){
+  let s=new Date(cur), e=addWorkingDays(s,t.days);
+  taskData.push({...t,start:s,end:e}); cur=nextWorkingDay(e);
+}
+let projEnd = taskData[taskData.length-1].end;
+let allDates=[]; let d=new Date(start0);
+while(d<=projEnd){ allDates.push(new Date(d)); d.setDate(d.getDate()+1); }
+
+const mn=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+const da=['日','一','二','三','四','五','六'];
+
+// Build month spans
+let monthSpans=[], lastKey='';
+allDates.forEach((dt,i)=>{
+  let k=`${dt.getFullYear()}-${dt.getMonth()}`;
+  if(k!==lastKey){ monthSpans.push({key:k,label:`${dt.getFullYear()} ${mn[dt.getMonth()]}`,start:i,count:0}); lastKey=k; }
+  monthSpans[monthSpans.length-1].count++;
+});
+
+let html='<div class="gantt-scroll"><table><thead>';
+// Month row
+html+='<tr class="month-header-row"><th class="info-col" colspan="5"></th>';
+monthSpans.forEach(m=>{ html+=`<th colspan="${m.count}" style="text-align:center;">${m.label}</th>`; });
+html+='</tr>';
+// Day row
+html+='<tr class="day-header-row">';
+html+='<th class="info-th" style="min-width:150px">工作項目</th>';
+html+='<th class="info-th" style="min-width:260px">說明</th>';
+html+='<th class="info-th" style="min-width:60px;text-align:center">天數</th>';
+html+='<th class="info-th" style="min-width:90px;text-align:center">開始</th>';
+html+='<th class="info-th" style="min-width:90px;text-align:center;border-right:2px solid #2a2d35;">結束</th>';
+allDates.forEach(dt=>{
+  let we=dt.getDay()===0||dt.getDay()===6;
+  html+=`<th class="${we?'weekend-col':''}" style="min-width:26px;padding:4px 1px;"><div style="font-size:10px;font-weight:600;line-height:1.3;">${dt.getDate()}</div><div style="font-size:8px;opacity:0.5;">${da[dt.getDay()]}</div></th>`;
+});
+html+='</tr></thead><tbody>';
+
+taskData.forEach((task,ri)=>{
+  html+=`<tr class="task-row">`;
+  html+=`<td class="col-task"><div class="task-name"><div class="task-name-inner"><span class="row-index">${ri+1}</span>${task.name}</div></div></td>`;
+  html+=`<td class="col-desc"><span class="task-desc">${task.desc}</span></td>`;
+  html+=`<td class="col-days"><span class="days-badge">${task.days}天</span></td>`;
+  html+=`<td class="col-date"><span class="date-text">${fmtShort(task.start)}</span></td>`;
+  html+=`<td class="col-date col-date-end"><span class="date-text">${fmtShort(task.end)}</span></td>`;
+  allDates.forEach(dt=>{
+    let we=dt.getDay()===0||dt.getDay()===6;
+    let inR=dt>=task.start&&dt<=task.end;
+    let isS=dt.toDateString()===task.start.toDateString();
+    let isE=dt.toDateString()===task.end.toDateString();
+    let bc='', bs='';
+    if(inR&&!we){ bc='active'+(isS?' bar-start':'')+(isE?' bar-end':''); bs=`background:${task.color};`; }
+    else if(inR&&we){ bs=`background:${task.color}44;`; }
+    html+=`<td class="gantt-cell${we?' weekend':''}">`;
+    html+=inR?`<div class="bar-fill ${bc}" style="${bs}"></div>`:`<div style="height:18px"></div>`;
+    html+=`</td>`;
+  });
+  html+='</tr>';
+});
+html+='</tbody></table></div>';
+document.getElementById('gantt-container').innerHTML=html;
+
+setTimeout(()=>{
+  document.querySelectorAll('.bar-fill.active').forEach((el,i)=>{
+    el.style.cssText+=`;opacity:0;transform:scaleX(0);transform-origin:left;transition:opacity 0.25s ${i*1.5}ms,transform 0.25s ${i*1.5}ms`;
+    requestAnimationFrame(()=>{ el.style.opacity='1'; el.style.transform='scaleX(1)'; });
+  });
+},80);
+</script>
+</body>
+</html>
